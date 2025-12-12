@@ -2,16 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Secret Santa Picker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+  <title>Secret Santa</title>
 
-    * {
-      box-sizing: border-box;
-    }
+  <!-- Mobile viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- iPhone web app -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Secret Santa" />
+  <meta name="theme-color" content="#4f46e5" />
+
+  <!-- ✅ iPhone icon (must exist in repo root with EXACT name) -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" href="apple-touch-icon.png" />
+
+  <style>
+    :root { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -26,17 +34,13 @@
     .app {
       width: 100%;
       max-width: 900px;
-      background: #ffffff;
+      background: #fff;
       border-radius: 1.5rem;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
       padding: 1.75rem 1.75rem 2rem;
     }
 
-    @media (min-width: 768px) {
-      .app {
-        padding: 2rem 2.25rem 2.5rem;
-      }
-    }
+    @media (min-width: 768px) { .app { padding: 2rem 2.25rem 2.5rem; } }
 
     .app-header {
       display: flex;
@@ -53,18 +57,11 @@
       color: #111827;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: .5rem;
     }
 
-    .app-title span.emoji {
-      font-size: 1.9rem;
-    }
-
-    .app-subtitle {
-      color: #6b7280;
-      font-size: 0.95rem;
-      margin-top: 0.25rem;
-    }
+    .app-title .emoji { font-size: 1.9rem; }
+    .app-subtitle { color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem; }
 
     .pill {
       padding: 0.4rem 0.9rem;
@@ -77,18 +74,8 @@
       text-transform: uppercase;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .grid {
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 1.75rem;
-      }
-    }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { .grid { grid-template-columns: 1.1fr 0.9fr; gap: 1.75rem; } }
 
     .card {
       border-radius: 1.2rem;
@@ -97,319 +84,183 @@
       background: #f9fafb;
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .75rem; }
+    .card-title { font-size: 0.95rem; font-weight: 600; color: #111827; }
+    .card-hint { font-size: 0.8rem; color: #9ca3af; }
 
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .card-hint {
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #4b5563;
-      margin-bottom: 0.4rem;
-    }
-
+    label { display:block; font-size:.85rem; font-weight:500; color:#4b5563; margin-bottom:.4rem; }
     textarea {
-      width: 100%;
-      border-radius: 0.75rem;
-      border: 1px solid #d1d5db;
-      padding: 0.75rem 0.85rem;
-      min-height: 160px;
-      resize: vertical;
-      font-size: 0.9rem;
-      font-family: inherit;
-      background: #ffffff;
+      width:100%;
+      border-radius:.75rem;
+      border:1px solid #d1d5db;
+      padding:.75rem .85rem;
+      min-height:160px;
+      resize:vertical;
+      font-size:.9rem;
+      font-family:inherit;
+      background:#fff;
     }
+    textarea::placeholder { color:#9ca3af; }
 
-    textarea::placeholder {
-      color: #9ca3af;
-    }
+    .help-text { font-size:.8rem; color:#9ca3af; margin-top:.25rem; }
 
-    .help-text {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      margin-top: 0.25rem;
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      align-items: center;
-    }
-
+    .btn-row { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1rem; align-items:center; }
     button {
-      border-radius: 999px;
-      border: none;
-      padding: 0.6rem 1.3rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s;
+      border-radius:999px;
+      border:none;
+      padding:.6rem 1.3rem;
+      font-size:.9rem;
+      font-weight:600;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      transition: transform .08s ease, box-shadow .08s ease, background .15s;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #4f46e5, #6366f1);
-      color: #ffffff;
+      color:#fff;
       box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
     }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow:0 12px 26px rgba(79,70,229,.45); }
+    .btn-secondary { background:#e5e7eb; color:#374151; }
+    .btn-secondary:hover { background:#d1d5db; }
+    .btn-ghost { background:transparent; color:#6b7280; padding-inline:0; box-shadow:none; }
+    .btn-ghost:hover { color:#374151; transform:none; }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(79, 70, 229, 0.45);
-    }
-
-    .btn-secondary {
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    .btn-secondary:hover {
-      background: #d1d5db;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: #6b7280;
-      padding-inline: 0;
-      box-shadow: none;
-    }
-
-    .btn-ghost:hover {
-      color: #374151;
-      transform: none;
-    }
-
-    .status {
-      font-size: 0.85rem;
-      color: #6b7280;
-    }
-
-    .status.error {
-      color: #b91c1c;
-    }
+    .status { font-size:.85rem; color:#6b7280; }
+    .status.error { color:#b91c1c; }
 
     .results-card {
       border-radius: 1.2rem;
       border: 1px solid #e5e7eb;
       padding: 1.1rem 1.2rem 1.25rem;
+      background: #fff;
     }
 
-    .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-      gap: 0.5rem;
-    }
+    .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; gap:.5rem; }
+    .results-title { font-size:.95rem; font-weight:600; color:#111827; display:flex; align-items:center; gap:.4rem; }
+    .results-title .icon { font-size:1.1rem; }
 
-    .results-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #111827;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .results-title span.icon {
-      font-size: 1.1rem;
-    }
-
-    .results-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 0.4rem;
-      font-size: 0.9rem;
-    }
-
+    .results-list { margin:0; padding:0; list-style:none; display:grid; gap:.4rem; font-size:.9rem; }
     .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.45rem 0.65rem;
-      border-radius: 0.75rem;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.75rem;
+      padding:.45rem .65rem;
+      border-radius:.75rem;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
     }
+    .result-name { font-weight:500; color:#111827; }
+    .arrow { font-size:.9rem; color:#9ca3af; white-space:nowrap; }
+    .result-target { font-weight:500; color:#4f46e5; }
 
-    .result-name {
-      font-weight: 500;
-      color: #111827;
-    }
-
-    .arrow {
-      font-size: 0.9rem;
-      color: #9ca3af;
-      white-space: nowrap;
-    }
-
-    .result-target {
-      font-weight: 500;
-      color: #4f46e5;
-    }
-
-    .results-empty {
-      font-size: 0.85rem;
-      color: #9ca3af;
-      font-style: italic;
-    }
+    .results-empty { font-size:.85rem; color:#9ca3af; font-style:italic; }
 
     .footer {
-      margin-top: 1.25rem;
-      font-size: 0.75rem;
-      color: #9ca3af;
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .footer a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(156, 163, 175, 0.6);
-    }
-
-    .footer a:hover {
-      border-bottom-style: solid;
+      margin-top:1.25rem;
+      font-size:.75rem;
+      color:#9ca3af;
+      display:flex;
+      justify-content:space-between;
+      gap:.75rem;
+      flex-wrap:wrap;
+      align-items:center;
     }
   </style>
 </head>
+
 <body>
   <div class="app">
     <header class="app-header">
       <div>
-        <div class="app-title">
-          <span class="emoji">🎅🏼</span>
-          <span>Secret Santa Matcher</span>
-        </div>
-        <p class="app-subtitle">Paste your group, set any “do not match” rules, and generate a fair Secret Santa in one click.</p>
+        <div class="app-title"><span class="emoji">🎅🏼</span><span>Secret Santa</span></div>
+        <p class="app-subtitle">Paste names, add “do not match” rules, and generate instantly.</p>
       </div>
-      <div class="pill">No login · Runs locally</div>
+      <div class="pill">Runs locally</div>
     </header>
 
     <main class="grid">
-      <!-- Left: Inputs -->
       <section class="card">
         <div class="card-header">
           <div>
             <div class="card-title">Participants</div>
-            <div class="card-hint">Add one name per line. At least 3 people.</div>
+            <div class="card-hint">One name per line. At least 3 people.</div>
           </div>
         </div>
+
         <label for="names">Names</label>
-        <textarea id="names" placeholder="Example:
-Anna
+        <textarea id="names" placeholder="Anna
 Ben
 Clara
-David
-Ella
-..."></textarea>
-        <div class="help-text">Tip: Use the exact same spelling later for banned pairs.</div>
+David"></textarea>
+        <div class="help-text">Use the same spelling in forbidden pairs.</div>
 
         <div style="margin-top:1rem"></div>
 
         <div class="card-header">
           <div>
             <div class="card-title">Forbidden pairs (optional)</div>
-            <div class="card-hint">Use this to prevent partners, same household, or specific pairs.</div>
+            <div class="card-hint">Prevent partners / specific pairs.</div>
           </div>
         </div>
+
         <label for="banned">Do not match (giver,receiver)</label>
-        <textarea id="banned" placeholder="Format: one pair per line, separated by a comma.
-Example:
-Anna,Ben
+        <textarea id="banned" placeholder="Anna,Ben
 Clara,David"></textarea>
-        <div class="help-text">
-          “Anna,Ben” means <strong>Anna cannot get Ben</strong>.  
-          Self-matches are always forbidden automatically.
-        </div>
+        <div class="help-text">Example: “Anna,Ben” means Anna cannot get Ben.</div>
 
         <div class="btn-row">
-          <button class="btn-primary" id="generateBtn">
-            <span>🎁 Generate Secret Santa</span>
-          </button>
-          <button class="btn-secondary" id="clearBtn">Clear all</button>
+          <button class="btn-primary" id="generateBtn">🎁 Generate</button>
+          <button class="btn-secondary" id="clearBtn">Clear</button>
           <span id="status" class="status"></span>
         </div>
       </section>
 
-      <!-- Right: Results -->
       <section class="results-card">
         <div class="results-header">
-          <div class="results-title">
-            <span class="icon">✨</span>
-            <span>Assignments</span>
-          </div>
+          <div class="results-title"><span class="icon">✨</span><span>Assignments</span></div>
           <div class="btn-row" style="margin:0;">
             <button class="btn-ghost" id="reshuffleBtn" style="display:none;">🔄 Reshuffle</button>
             <button class="btn-ghost" id="copyBtn" style="display:none;">📋 Copy</button>
           </div>
         </div>
+
         <div id="resultsContainer">
-          <p class="results-empty">No matches yet. Add names and click “Generate Secret Santa”.</p>
+          <p class="results-empty">No matches yet. Add names and tap “Generate”.</p>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <span>All matching is done in your browser – nothing is uploaded.</span>
-      <span>Pro tip: re-open this file next year and reuse it for the same group.</span>
+      <span>Nothing is uploaded — it runs in your browser.</span>
+      <span>Tip: re-add to Home Screen after icon changes.</span>
     </footer>
   </div>
 
   <script>
-    // Utility: parse names from textarea
     function parseNames(raw) {
-      return raw
-        .split('\n')
-        .map(n => n.trim())
-        .filter(n => n.length > 0);
+      return raw.split('\n').map(s => s.trim()).filter(Boolean);
     }
 
-    // Utility: parse banned pairs: "giver,receiver" per line
     function parseBannedPairs(raw) {
-      const lines = raw.split('\n');
       const banned = new Set();
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-        const parts = trimmed.split(',');
+      for (const line of raw.split('\n')) {
+        const t = line.trim();
+        if (!t) continue;
+        const parts = t.split(',');
         if (parts.length !== 2) continue;
         const giver = parts[0].trim();
         const receiver = parts[1].trim();
         if (!giver || !receiver) continue;
-        const key = giver + '→' + receiver;
-        banned.add(key);
+        banned.add(giver + '→' + receiver);
       }
       return banned;
     }
 
-    // Fisher–Yates shuffle
     function shuffle(array) {
       const arr = array.slice();
       for (let i = arr.length - 1; i > 0; i--) {
@@ -419,52 +270,29 @@ Clara,David"></textarea>
       return arr;
     }
 
-    // Generate a Secret Santa assignment with constraints
     function generateAssignments(names, bannedPairs, maxAttempts = 5000) {
-      if (names.length < 3) {
-        throw new Error('You need at least 3 participants.');
-      }
+      if (names.length < 3) throw new Error('You need at least 3 participants.');
 
-      const len = names.length;
-      const sortedNames = names.slice().sort((a, b) => a.localeCompare(b));
+      const sorted = names.slice().sort((a, b) => a.localeCompare(b));
+      const n = sorted.length;
 
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        const receivers = shuffle(sortedNames);
+        const receivers = shuffle(sorted);
+        let ok = true;
 
-        let valid = true;
-        for (let i = 0; i < len; i++) {
-          const giver = sortedNames[i];
+        for (let i = 0; i < n; i++) {
+          const giver = sorted[i];
           const receiver = receivers[i];
-
-          // no self
-          if (giver === receiver) {
-            valid = false;
-            break;
-          }
-
-          // no banned
-          const key = giver + '→' + receiver;
-          if (bannedPairs.has(key)) {
-            valid = false;
-            break;
-          }
+          if (giver === receiver) { ok = false; break; }
+          if (bannedPairs.has(giver + '→' + receiver)) { ok = false; break; }
         }
 
-        if (valid) {
-          const assignments = [];
-          for (let i = 0; i < len; i++) {
-            assignments.push({ giver: sortedNames[i], receiver: receivers[i] });
-          }
-          return assignments;
-        }
+        if (ok) return sorted.map((giver, i) => ({ giver, receiver: receivers[i] }));
       }
 
-      throw new Error(
-        'Could not find a valid assignment with these constraints. Try removing some forbidden pairs or adding more people.'
-      );
+      throw new Error('No valid match found. Remove some forbidden pairs or add more people.');
     }
 
-    // DOM references
     const namesEl = document.getElementById('names');
     const bannedEl = document.getElementById('banned');
     const generateBtn = document.getElementById('generateBtn');
@@ -474,14 +302,18 @@ Clara,David"></textarea>
     const reshuffleBtn = document.getElementById('reshuffleBtn');
     const copyBtn = document.getElementById('copyBtn');
 
-    let lastAssignments = null;
     let lastNames = [];
-    let lastBannedPairs = null;
+    let lastBanned = null;
+    let lastAssignments = null;
 
-    function renderAssignments(assignments) {
+    function showStatus(msg, isErr=false) {
+      statusEl.textContent = msg || '';
+      statusEl.classList.toggle('error', !!isErr);
+    }
+
+    function render(assignments) {
       if (!assignments || assignments.length === 0) {
-        resultsContainer.innerHTML =
-          '<p class="results-empty">No matches yet. Add names and click “Generate Secret Santa”.</p>';
+        resultsContainer.innerHTML = '<p class="results-empty">No matches yet. Add names and tap “Generate”.</p>';
         reshuffleBtn.style.display = 'none';
         copyBtn.style.display = 'none';
         return;
@@ -490,38 +322,30 @@ Clara,David"></textarea>
       const ul = document.createElement('ul');
       ul.className = 'results-list';
 
-      for (const pair of assignments) {
+      for (const p of assignments) {
         const li = document.createElement('li');
         li.className = 'result-row';
 
-        const giverSpan = document.createElement('span');
-        giverSpan.className = 'result-name';
-        giverSpan.textContent = pair.giver;
+        const a = document.createElement('span');
+        a.className = 'result-name';
+        a.textContent = p.giver;
 
-        const arrowSpan = document.createElement('span');
-        arrowSpan.className = 'arrow';
-        arrowSpan.textContent = '→';
+        const arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        arrow.textContent = '→';
 
-        const receiverSpan = document.createElement('span');
-        receiverSpan.className = 'result-target';
-        receiverSpan.textContent = pair.receiver;
+        const b = document.createElement('span');
+        b.className = 'result-target';
+        b.textContent = p.receiver;
 
-        li.appendChild(giverSpan);
-        li.appendChild(arrowSpan);
-        li.appendChild(receiverSpan);
+        li.appendChild(a); li.appendChild(arrow); li.appendChild(b);
         ul.appendChild(li);
       }
 
       resultsContainer.innerHTML = '';
       resultsContainer.appendChild(ul);
-
       reshuffleBtn.style.display = 'inline-flex';
       copyBtn.style.display = 'inline-flex';
-    }
-
-    function showStatus(message, isError = false) {
-      statusEl.textContent = message || '';
-      statusEl.classList.toggle('error', Boolean(isError));
     }
 
     generateBtn.addEventListener('click', () => {
@@ -530,64 +354,52 @@ Clara,David"></textarea>
       const names = parseNames(namesEl.value);
       const banned = parseBannedPairs(bannedEl.value);
 
-      if (names.length < 3) {
-        showStatus('Please enter at least 3 names.', true);
-        renderAssignments(null);
-        return;
-      }
-
-      // Add self-bans explicitly (not necessary but clearer)
-      for (const n of names) {
-        banned.add(n + '→' + n);
-      }
+      for (const n of names) banned.add(n + '→' + n);
 
       try {
         const assignments = generateAssignments(names, banned);
-        lastAssignments = assignments;
         lastNames = names;
-        lastBannedPairs = banned;
-        renderAssignments(assignments);
+        lastBanned = banned;
+        lastAssignments = assignments;
+        render(assignments);
         showStatus('Assignments generated ✔');
-      } catch (err) {
+      } catch (e) {
         lastAssignments = null;
-        renderAssignments(null);
-        showStatus(err.message, true);
+        render(null);
+        showStatus(e.message, true);
       }
     });
 
     reshuffleBtn.addEventListener('click', () => {
-      if (!lastNames || !lastBannedPairs) return;
+      if (!lastNames.length || !lastBanned) return;
       try {
-        const assignments = generateAssignments(lastNames, lastBannedPairs);
+        const assignments = generateAssignments(lastNames, lastBanned);
         lastAssignments = assignments;
-        renderAssignments(assignments);
+        render(assignments);
         showStatus('Reshuffled ✔');
-      } catch (err) {
-        showStatus(err.message, true);
+      } catch (e) {
+        showStatus(e.message, true);
       }
     });
 
     copyBtn.addEventListener('click', async () => {
-      if (!lastAssignments || lastAssignments.length === 0) return;
-      const text = lastAssignments
-        .map(p => `${p.giver} → ${p.receiver}`)
-        .join('\n');
-
+      if (!lastAssignments) return;
+      const text = lastAssignments.map(p => `${p.giver} → ${p.receiver}`).join('\n');
       try {
         await navigator.clipboard.writeText(text);
-        showStatus('Copied to clipboard ✔');
+        showStatus('Copied ✔');
       } catch {
-        showStatus('Could not copy to clipboard, sorry.', true);
+        showStatus('Could not copy.', true);
       }
     });
 
     clearBtn.addEventListener('click', () => {
       namesEl.value = '';
       bannedEl.value = '';
-      lastAssignments = null;
       lastNames = [];
-      lastBannedPairs = null;
-      renderAssignments(null);
+      lastBanned = null;
+      lastAssignments = null;
+      render(null);
       showStatus('');
     });
   </script>
