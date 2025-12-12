@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secret Santa Picker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe9e9, #f5f7fb);
+      padding: 1.5rem;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: #ffffff;
+      border-radius: 1.5rem;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      padding: 1.75rem 1.75rem 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .app {
+        padding: 2rem 2.25rem 2.5rem;
+      }
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .app-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .app-title span.emoji {
+      font-size: 1.9rem;
+    }
+
+    .app-subtitle {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    .pill {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background: #f3f4ff;
+      color: #4f46e5;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1.75rem;
+      }
+    }
+
+    .card {
+      border-radius: 1.2rem;
+      border: 1px solid #e5e7eb;
+      padding: 1.1rem 1.2rem 1.2rem;
+      background: #f9fafb;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .card-hint {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #4b5563;
+      margin-bottom: 0.4rem;
+    }
+
+    textarea {
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid #d1d5db;
+      padding: 0.75rem 0.85rem;
+      min-height: 160px;
+      resize: vertical;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: #ffffff;
+    }
+
+    textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .help-text {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 0.25rem;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      align-items: center;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(79, 70, 229, 0.45);
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #6b7280;
+      padding-inline: 0;
+      box-shadow: none;
+    }
+
+    .btn-ghost:hover {
+      color: #374151;
+      transform: none;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .status.error {
+      color: #b91c1c;
+    }
+
+    .results-card {
+      border-radius: 1.2rem;
+      border: 1px solid #e5e7eb;
+      padding: 1.1rem 1.2rem 1.25rem;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .results-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .results-title span.icon {
+      font-size: 1.1rem;
+    }
+
+    .results-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 0.75rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .result-name {
+      font-weight: 500;
+      color: #111827;
+    }
+
+    .arrow {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .result-target {
+      font-weight: 500;
+      color: #4f46e5;
+    }
+
+    .results-empty {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 1.25rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .footer a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(156, 163, 175, 0.6);
+    }
+
+    .footer a:hover {
+      border-bottom-style: solid;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div>
+        <div class="app-title">
+          <span class="emoji">🎅🏼</span>
+          <span>Secret Santa Matcher</span>
+        </div>
+        <p class="app-subtitle">Paste your group, set any “do not match” rules, and generate a fair Secret Santa in one click.</p>
+      </div>
+      <div class="pill">No login · Runs locally</div>
+    </header>
+
+    <main class="grid">
+      <!-- Left: Inputs -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Participants</div>
+            <div class="card-hint">Add one name per line. At least 3 people.</div>
+          </div>
+        </div>
+        <label for="names">Names</label>
+        <textarea id="names" placeholder="Example:
+Anna
+Ben
+Clara
+David
+Ella
+..."></textarea>
+        <div class="help-text">Tip: Use the exact same spelling later for banned pairs.</div>
+
+        <div style="margin-top:1rem"></div>
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Forbidden pairs (optional)</div>
+            <div class="card-hint">Use this to prevent partners, same household, or specific pairs.</div>
+          </div>
+        </div>
+        <label for="banned">Do not match (giver,receiver)</label>
+        <textarea id="banned" placeholder="Format: one pair per line, separated by a comma.
+Example:
+Anna,Ben
+Clara,David"></textarea>
+        <div class="help-text">
+          “Anna,Ben” means <strong>Anna cannot get Ben</strong>.  
+          Self-matches are always forbidden automatically.
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="generateBtn">
+            <span>🎁 Generate Secret Santa</span>
+          </button>
+          <button class="btn-secondary" id="clearBtn">Clear all</button>
+          <span id="status" class="status"></span>
+        </div>
+      </section>
+
+      <!-- Right: Results -->
+      <section class="results-card">
+        <div class="results-header">
+          <div class="results-title">
+            <span class="icon">✨</span>
+            <span>Assignments</span>
+          </div>
+          <div class="btn-row" style="margin:0;">
+            <button class="btn-ghost" id="reshuffleBtn" style="display:none;">🔄 Reshuffle</button>
+            <button class="btn-ghost" id="copyBtn" style="display:none;">📋 Copy</button>
+          </div>
+        </div>
+        <div id="resultsContainer">
+          <p class="results-empty">No matches yet. Add names and click “Generate Secret Santa”.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>All matching is done in your browser – nothing is uploaded.</span>
+      <span>Pro tip: re-open this file next year and reuse it for the same group.</span>
+    </footer>
+  </div>
+
+  <script>
+    // Utility: parse names from textarea
+    function parseNames(raw) {
+      return raw
+        .split('\n')
+        .map(n => n.trim())
+        .filter(n => n.length > 0);
+    }
+
+    // Utility: parse banned pairs: "giver,receiver" per line
+    function parseBannedPairs(raw) {
+      const lines = raw.split('\n');
+      const banned = new Set();
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const parts = trimmed.split(',');
+        if (parts.length !== 2) continue;
+        const giver = parts[0].trim();
+        const receiver = parts[1].trim();
+        if (!giver || !receiver) continue;
+        const key = giver + '→' + receiver;
+        banned.add(key);
+      }
+      return banned;
+    }
+
+    // Fisher–Yates shuffle
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Generate a Secret Santa assignment with constraints
+    function generateAssignments(names, bannedPairs, maxAttempts = 5000) {
+      if (names.length < 3) {
+        throw new Error('You need at least 3 participants.');
+      }
+
+      const len = names.length;
+      const sortedNames = names.slice().sort((a, b) => a.localeCompare(b));
+
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const receivers = shuffle(sortedNames);
+
+        let valid = true;
+        for (let i = 0; i < len; i++) {
+          const giver = sortedNames[i];
+          const receiver = receivers[i];
+
+          // no self
+          if (giver === receiver) {
+            valid = false;
+            break;
+          }
+
+          // no banned
+          const key = giver + '→' + receiver;
+          if (bannedPairs.has(key)) {
+            valid = false;
+            break;
+          }
+        }
+
+        if (valid) {
+          const assignments = [];
+          for (let i = 0; i < len; i++) {
+            assignments.push({ giver: sortedNames[i], receiver: receivers[i] });
+          }
+          return assignments;
+        }
+      }
+
+      throw new Error(
+        'Could not find a valid assignment with these constraints. Try removing some forbidden pairs or adding more people.'
+      );
+    }
+
+    // DOM references
+    const namesEl = document.getElementById('names');
+    const bannedEl = document.getElementById('banned');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusEl = document.getElementById('status');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const reshuffleBtn = document.getElementById('reshuffleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    let lastAssignments = null;
+    let lastNames = [];
+    let lastBannedPairs = null;
+
+    function renderAssignments(assignments) {
+      if (!assignments || assignments.length === 0) {
+        resultsContainer.innerHTML =
+          '<p class="results-empty">No matches yet. Add names and click “Generate Secret Santa”.</p>';
+        reshuffleBtn.style.display = 'none';
+        copyBtn.style.display = 'none';
+        return;
+      }
+
+      const ul = document.createElement('ul');
+      ul.className = 'results-list';
+
+      for (const pair of assignments) {
+        const li = document.createElement('li');
+        li.className = 'result-row';
+
+        const giverSpan = document.createElement('span');
+        giverSpan.className = 'result-name';
+        giverSpan.textContent = pair.giver;
+
+        const arrowSpan = document.createElement('span');
+        arrowSpan.className = 'arrow';
+        arrowSpan.textContent = '→';
+
+        const receiverSpan = document.createElement('span');
+        receiverSpan.className = 'result-target';
+        receiverSpan.textContent = pair.receiver;
+
+        li.appendChild(giverSpan);
+        li.appendChild(arrowSpan);
+        li.appendChild(receiverSpan);
+        ul.appendChild(li);
+      }
+
+      resultsContainer.innerHTML = '';
+      resultsContainer.appendChild(ul);
+
+      reshuffleBtn.style.display = 'inline-flex';
+      copyBtn.style.display = 'inline-flex';
+    }
+
+    function showStatus(message, isError = false) {
+      statusEl.textContent = message || '';
+      statusEl.classList.toggle('error', Boolean(isError));
+    }
+
+    generateBtn.addEventListener('click', () => {
+      showStatus('');
+
+      const names = parseNames(namesEl.value);
+      const banned = parseBannedPairs(bannedEl.value);
+
+      if (names.length < 3) {
+        showStatus('Please enter at least 3 names.', true);
+        renderAssignments(null);
+        return;
+      }
+
+      // Add self-bans explicitly (not necessary but clearer)
+      for (const n of names) {
+        banned.add(n + '→' + n);
+      }
+
+      try {
+        const assignments = generateAssignments(names, banned);
+        lastAssignments = assignments;
+        lastNames = names;
+        lastBannedPairs = banned;
+        renderAssignments(assignments);
+        showStatus('Assignments generated ✔');
+      } catch (err) {
+        lastAssignments = null;
+        renderAssignments(null);
+        showStatus(err.message, true);
+      }
+    });
+
+    reshuffleBtn.addEventListener('click', () => {
+      if (!lastNames || !lastBannedPairs) return;
+      try {
+        const assignments = generateAssignments(lastNames, lastBannedPairs);
+        lastAssignments = assignments;
+        renderAssignments(assignments);
+        showStatus('Reshuffled ✔');
+      } catch (err) {
+        showStatus(err.message, true);
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      if (!lastAssignments || lastAssignments.length === 0) return;
+      const text = lastAssignments
+        .map(p => `${p.giver} → ${p.receiver}`)
+        .join('\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        showStatus('Copied to clipboard ✔');
+      } catch {
+        showStatus('Could not copy to clipboard, sorry.', true);
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      namesEl.value = '';
+      bannedEl.value = '';
+      lastAssignments = null;
+      lastNames = [];
+      lastBannedPairs = null;
+      renderAssignments(null);
+      showStatus('');
+    });
+  </script>
+</body>
+</html>
